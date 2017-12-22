@@ -1,0 +1,56 @@
+.namePic {
+    overflow: hidden;
+    position: relative;
+}
+.namePic .pic {
+    float: left;
+}
+.namePic .name {
+    position: relative;
+    float: left;
+    margin: 20px 0 10px 30px;
+}
+.namePic .name .username {
+    font-size: 22px;
+    font-family: 黑体;
+    font-weight: 900;
+}
+
+.namePic .name .tag {
+    margin-top: 25px;
+}
+.otherInfo {
+    font-size: 15px;
+    margin-top: 10px;
+    font-weight: 600;
+}
+.List {
+
+}
+.List .postItem {
+    padding-top: 12px;
+    border-bottom: 1px solid #e8e8e8;
+}
+.List .postItem .content {
+    padding-bottom: 10px;
+}
+.List .postItem .footer{
+    display: -webkit-flex; /* Safari */
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    list-style: none;
+    padding: 0;
+    outline: none;
+    line-height: 1.5;
+    color: #9ea7b4;
+}
+.List .postItem .footer .footerItem {
+    flex: 0 0 auto;
+}
+.rightBorder {
+    height: 16px;
+    margin-left: 15px;
+    margin-right: 16px;
+}

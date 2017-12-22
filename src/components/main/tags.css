@@ -1,0 +1,6 @@
+.tags-enter .tags-enter-active {
+    transition: transform 500ms ease-in;
+}
+.tags-leave .tags-leave-active {
+    transition: transform 300ms ease-in;
+}

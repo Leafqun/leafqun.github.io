@@ -1,0 +1,52 @@
+.custom-filter-dropdown {
+    padding: 8px;
+    border-radius: 6px;
+    background: #fafafa;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
+    width: 400px;
+}
+
+.custom-filter-dropdown input {
+    width: 200px;
+    margin-right: 8px;
+}
+
+.highlight {
+    color: #f50;
+}
+.devInfo {
+    display: flex;
+    display: -webkit-flex; /* Safari */
+    flex-flow: row wrap;
+    font-size: 16px;
+    padding-bottom: 15px;
+}
+.devInfo .title {
+    font-weight: 900;
+    width: 80px;
+}
+.devInfo .content {
+    padding-left: 5px;
+}
+.editDev {
+    display: flex;
+    display: -webkit-flex; /* Safari */
+    flex-flow: row wrap;
+    padding-bottom: 15px;
+}
+.editDev .btn {
+    margin-left: 10px;
+}
+.devAdd {
+    display: flex;
+    display: -webkit-flex; /* Safari */
+    flex-flow: row wrap;
+    margin-top: 90px;
+    margin-bottom: 110px;
+}
+.devAdd .addInput {
+
+}
+.devAdd .addSubmit {
+    margin-left: 10px;
+}

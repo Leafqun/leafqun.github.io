@@ -1,0 +1,29 @@
+.Card {
+    border-radius:3px;
+    display: flex;
+    margin-bottom: 12px;
+}
+.Card:hover {
+    box-shadow:  0 0 2px #999999;
+}
+.all {
+    display: flex;
+    flex-flow: column wrap;
+}
+.top {
+    display: flex;
+}
+.leftTop {
+    display: flex;
+    flex-direction: column;
+    width: 60%
+}
+.mapTable {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.infoCard {
+    display: flex;
+    width: 100%
+}
