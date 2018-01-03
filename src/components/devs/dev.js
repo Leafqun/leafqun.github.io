@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as tagsActions from "../../actions/tagsActions";
 import './dev.css'
+import tags from "../../config/tags";
 
 class Dev extends React.Component {
     constructor (props) {
@@ -114,6 +115,32 @@ class Dev extends React.Component {
     clearMax = () => {
         this.setState({max: '', isEditMax: false})
     }
+    createTag = (val) => {
+        let {tagsOpenedList} = this.props
+        let isOpened = false
+        tagsOpenedList.forEach((tag,index) => {
+            if (tag.name === val) {
+                isOpened = true
+                // this.props.moveToSecond(index)
+                return
+            }
+        })
+        if (!isOpened) {
+            this.props.createTag({name: val, title: tags[val]})
+        }
+    }
+    showGroupInfo = (e, groupid) => {
+        e.preventDefault()
+        this.createTag('groups')
+        history.push({pathname: '/groups/' + groupid})
+        this.props.setActiveTag(history.location.pathname)
+    }
+    showUserInfo = (e, id, userid) => {
+        e.preventDefault()
+        this.createTag('users')
+        history.push({pathname: '/users/' + userid + '/' + id})
+        this.props.setActiveTag(history.location.pathname)
+    }
     render () {
         const {loading, dev, isEditDevid, isEditMax, idLoading, maxLoading, idIcon, maxIcon} = this.state
         const title =  <div style={{ fontSize: 14, color: 'black' }}>
@@ -125,16 +152,22 @@ class Dev extends React.Component {
                     {isEditDevid ? <div className="editDev"><div><Input style={{width: 250}} placeholder="请输入设备id" onChange={this.handleDevidChange}/></div><div className="btn"><Button onClick={this.clearDevid} style={{marginRight: 5}}>取消</Button><Button type="primary" onClick={this.submitDevid} loading={idLoading} icon={idIcon}>提交</Button></div></div>
                         : <div className="devInfo"><div className="title">设备ID：</div><div className="content"><Spin spinning={loading}/>{dev.devid}</div><div style={{marginLeft: 5, fontWeight: 900}}><a href="" onClick={this.isEditDevid}><Icon type="edit" /></a></div></div>}
                     <div className="devInfo"><div className="title">创建时间：</div><div className="content"><Spin spinning={loading}/>{dev.create_time}</div></div>
-                    {isEditMax ? <div className="editDev"><div><Input style={{width: 250}} placeholder="请输入最大人数" onChange={this.handleMaxChange}/></div><div className="btn"><Button onClick={this.clearMax} style={{marginRight: 5}}>取消</Button><Button type="primary" onClick={this.submitMax} loading={maxLoading} icon={maxIcon}>提交</Button></div></div>
-                        : <div className="devInfo"><div className="title">最大人数：</div><div className="content"><Spin spinning={loading}/>{dev.max}</div><div style={{marginLeft: 5, fontWeight: 900}}><a href="" onClick={this.isEditMax}><Icon type="edit"/></a></div></div>}
-                    <div className="devInfo"><div className="title">群组ID：</div><div className="content"><Spin spinning={loading}/>{dev.groupid}</div></div>
-                    <div className="devInfo"><div className="title">群组名：</div><div className="content"><Spin spinning={loading}/>{dev.group_name}</div></div>
+                    {dev.type === 1 ? [isEditMax ? <div className="editDev" key={1}><div><Input style={{width: 250}} placeholder="请输入最大人数" onChange={this.handleMaxChange}/></div><div className="btn"><Button onClick={this.clearMax} style={{marginRight: 5}}>取消</Button><Button type="primary" onClick={this.submitMax} loading={maxLoading} icon={maxIcon}>提交</Button></div></div>
+                        : <div className="devInfo"><div className="title">最大人数：</div><div className="content"><Spin spinning={loading}/>{dev.max}</div><div style={{marginLeft: 5, fontWeight: 900}}><a href="" onClick={this.isEditMax}><Icon type="edit"/></a></div></div>,
+                    <div className="devInfo" key={2}><div className="title">群组：</div><div className="content"><Spin spinning={loading}/>{dev.groupid ? <a href="" onClick={(e) => this.showGroupInfo(e, dev.groupid)}>{dev.group_name}<span style={{fontSize: 10}}>#{dev.groupid}</span></a> : '未绑定群组'}</div></div>] : null}
+                    <div className="devInfo"><div className="title">用户：</div><div className="content"><Spin spinning={loading}/>{dev.userid ? <a href="" onClick={(e) => this.showUserInfo(e, dev.id, dev.userid)}>{dev.name}<span style={{fontSize: 10}}>#{dev.userid}</span></a> : '未绑定用户'}</div></div>
                 </Card>
             </div>
         )
     }
 }
+function mapStateToProps (state) {
+    return {
+        activeTag : state.activeTag,
+        tagsOpenedList: state.tagsOpenedList
+    }
+}
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(tagsActions, dispatch)
 }
-export default connect(null, mapDispatchToProps) (Dev)
+export default connect(mapStateToProps, mapDispatchToProps) (Dev)

@@ -36,7 +36,7 @@ class InfoCard extends React.Component {
                </div>
                <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '70%'}}>
                    <div style={{fontWeight: 700, fontSize: 30, color: color}}>
-                       {val ? <CountUp start={0} end={val} duration={3}/> : <Spin spinning={val <= 0}/>}
+                       {val >= 0 ? <CountUp start={0} end={val} duration={3}/> : <Spin/>}
                        <Tooltip title={endVal}>
                            {unit}
                        </Tooltip>

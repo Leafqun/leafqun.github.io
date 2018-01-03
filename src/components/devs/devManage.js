@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import url from '../../config/url'
-import { Card, Table, Tooltip, Popconfirm, Icon, Pagination, Input, Button, DatePicker } from 'antd'
+import { Card, Table, Tooltip, Popconfirm, Icon, Pagination, Input, Button, DatePicker, Tag } from 'antd'
 import {history} from "../../App";
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -112,7 +112,26 @@ class DevManage extends React.Component {
                 }
             },
             { title: '允许最大人数', dataIndex: 'max', className: 'fonts' },
-            { title: '对应群组ID', dataIndex: 'groupid', className: 'fonts' },
+            {
+                title: '是否绑定',
+                dataIndex: '',
+                className: 'fonts',
+                render: (record) => (
+                    <div style={{paddingLeft: 15}}>
+                        {record.id ? <Icon type="check-square" style={{color: 'green', fontSize: 18}}/> : <Icon type="close-square" style={{color: 'red', fontSize: 18}}/>}
+                    </div>
+                )
+            },
+            {
+                title: '类型',
+                dataIndex: '',
+                className: 'fonts',
+                render: (record) => (
+                    <div>
+                        {record.type === 1 ?  <Tag color="orange">平板</Tag> : <Tag color="green">腰环</Tag>}
+                    </div>
+                )
+            },
             {
                 title: '创建时间',
                 dataIndex: 'create_time',
@@ -120,7 +139,7 @@ class DevManage extends React.Component {
                 filterDropdown: (
                     <div style={{width: 450, padding: '8px', borderRadius: 6, backgroundColor: '#fff', boxShadow: '0 1px 6px rgba(0, 0, 0, .2)'}}>
                         <RangePicker onChange={(date, dateString) => this.handleDateChange(date, dateString)} style={{marginRight: 10}} showTime
-                                     renderExtraFooter={() => 'extra footer'} onOk={() => this.searchCreateTime()} value={date}/>
+                                     renderExtraFooter={() => 'extra footer'} onOk={() => this.searchCreateTime()} value={date} locale={{lang: {placeholder: '请选择日期', rangePlaceholder: ['开始日期', '结束日期'], "ok": "确定",}}}/>
                         <Button type="primary" onClick={() => this.clearDate()}>关闭</Button>
                     </div>
                 ),

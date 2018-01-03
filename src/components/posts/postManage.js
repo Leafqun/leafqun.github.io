@@ -180,7 +180,7 @@ class PostManage extends React.Component {
         const title =  <div style={{ fontSize: 14, color: 'black', display: 'flex'}}>
             <div><Icon type="user-add"/><span style={{marginLeft: 10}}>帖子列表</span></div>
             <div style={{marginLeft: 20}}><RangePicker onChange={(date, dateString) => this.handleDateChange(date, dateString)} style={{marginRight: 10}} showTime size="small"
-                                                       renderExtraFooter={() => 'extra footer'} value={date} locale={{lang: {placeholder: '请选择日期', rangePlaceholder: ['开始日期', '结束日期']}}}/></div>
+                                                       renderExtraFooter={() => 'extra footer'} value={date} locale={{lang: {placeholder: '请选择日期', rangePlaceholder: ['开始日期', '结束日期'], "ok": "确定",}}}/></div>
             <div style={{marginLeft: 5}}><Input size="small" style={{width: 200}} onChange={this.handleUserNameChange} value={condition} placeholder="请输入用户名或id"/>{selectAfter}</div>
             <div style={{marginLeft: 10}}><Button size="small" onClick={this.clear}>清空</Button><Button size="small" onClick={this.search} type="primary" style={{marginLeft: 5}}>提交</Button></div>
         </div>
@@ -194,26 +194,6 @@ class PostManage extends React.Component {
             <div>
                 <Card title={title}>
                     <Spin spinning={loading}>
-                        {/*<List
-                            itemLayout="vertical"
-                            dataSource={postList}
-                            renderItem={post => (
-                                <List.Item
-                                    key={post.postid}
-                                    actions={[
-                                        <IconText type="like-o" text={post.like_num} />,
-                                        <a href="" onClick={(e) => this.showComments(e, post.postid)}><IconText type="message" text={post.comment_num}/></a>,
-                                        <span>{post.create_time}</span>,
-                                        <Popconfirm title="确定要删除吗？"><a href=""><IconText type="delete" text=""/></a></Popconfirm>
-                                    ]}
-                                >
-                                    <div style={{marginBottom: 10}}>{post.content}</div>
-                                    <div>{post.post_pic.length > 0 ? post.post_pic.map(pic =>
-                                        <img width={100} height={100} alt="logo"  src={picUrl + user.id + '/' + pic.pic_name} key={pic.ppid} style={{marginRight: 5}}/>
-                                    ) : ''}</div>
-                                </List.Item>
-                            )}
-                        />*/}
                         <div className="List">
                             <QueueAnim
                                 type={['right', 'left']}
@@ -230,9 +210,9 @@ class PostManage extends React.Component {
                                         <div className="content">
                                             <div style={{marginBottom: 10}}>{post.content}</div>
                                             <div>{post.post_pic.length > 0 ? post.post_pic.map(pic =>
-                                                <img width={100} height={100} alt="logo"
+                                                <img alt="logo" height={150}
                                                      src={picUrl + post.id + '/' + pic.pic_name} key={pic.ppid}
-                                                     style={{marginRight: 5}}/>
+                                                     style={{marginRight: 5, marginBottom: 5}}/>
                                             ) : ''}</div>
                                         </div>
                                         <ul className="footer">

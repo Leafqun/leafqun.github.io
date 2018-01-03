@@ -1,13 +1,15 @@
 import React from 'react'
-import {Card, Icon, Input, Button, message} from 'antd'
+import {Card, Icon, Input, Button, message, Select} from 'antd'
 import url from '../../config/url'
 import axios from 'axios'
+const Option = Select.Option;
 
 class DevAdd extends React.Component {
     constructor (props) {
         super(props)
         this.state = {
             devid: '',
+            type: 1,
             loading: false,
             btIcon: ''
         }
@@ -19,7 +21,7 @@ class DevAdd extends React.Component {
         e.preventDefault()
         let that = this
         this.setState({loading: true})
-        axios.get(url + 'devs/addDev', {params: {devid: this.state.devid}}).then(response => {
+        axios.get(url + 'devs/addDev', {params: {devid: this.state.devid, type: this.state.type}}).then(response => {
             if (response.data.msg === 'success') {
                 this.setState({loading: false, btIcon: 'check'})
                 message.success('添加成功', 2);
@@ -38,6 +40,9 @@ class DevAdd extends React.Component {
             }, 2000)
         })
     }
+    handleSelectChange = (val) => {
+        this.setState({type: val})
+    }
     render () {
         const {loading, btIcon, devid} = this.state
         const title =  <div style={{ fontSize: 14, color: 'black' }}>
@@ -48,6 +53,12 @@ class DevAdd extends React.Component {
                 <Card  title={title}>
                     <div className="devAdd">
                         <div className="addInput"><Input placeholder="请输入设备ID" style={{width: 250}} onChange={this.handleInputChange} value={devid}/></div>
+                        <div>
+                            <Select defaultValue="1" style={{ width: 120 }} onChange={this.handleSelectChange}>
+                                <Option value="1">平板</Option>
+                                <Option value="2">腰环</Option>
+                            </Select>
+                        </div>
                         <div className="addSubmit"><Button type="primary" onClick={this.submitDevid} loading={loading} icon={btIcon}>提交</Button></div>
                     </div>
                 </Card>

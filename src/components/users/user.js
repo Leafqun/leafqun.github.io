@@ -22,7 +22,8 @@ class User extends React.Component {
                 password: '',
                 tel_num: '',
                 avatar: '',
-                is_login: ''
+                is_login: '',
+                devList: []
             },
             userLoading: true,
             groupList: [],
@@ -117,7 +118,14 @@ class User extends React.Component {
         history.push({pathname: '/groups/' + groupid})
         this.props.setActiveTag(history.location.pathname)
     }
+    showDevInfo = (e, devid) => {
+        e.preventDefault()
+        this.createTag('devs')
+        history.push({pathname: '/devs/' + devid})
+        this.props.setActiveTag(history.location.pathname)
+    }
     delete = (e, postid) => {
+        e.preventDefault()
         axios.get(url + 'posts/deletePost', {params: {postid: postid}}).then(response => {
             if (response.data.msg === 'success') {
                 this.getPostListFromUser(this.state.currentPage)
@@ -205,12 +213,22 @@ class User extends React.Component {
                     </div>
                     <div style={{display: 'flex', flexFlow: 'row wrap'}} className="otherInfo" key={3}>
                         <div>群组：</div>
-                        {groupList.map((group) =>
+                        {groupList.length > 0 ? groupList.map((group) =>
                             <div key={group.groupid}
                                  style={{marginRight: 15}}><a href="" onClick={(e) => this.showGroupInfo(e, group.groupid)}>{group.group_name}<span style={{fontSize: 10, fontWeight: 400}}>#{group.groupid}</span></a></div>
-                        )}
+                        ) : '无'}
                         <Spin spinning={groupLoading}/>
                     </div>
+                        <div style={{display: 'flex', flexFlow: 'row wrap'}} className="otherInfo" key={6}>
+                            <div>设备：</div>
+                            {user.devList.length > 0 ? user.devList.map((dev) =>
+                                <div key={dev.devid}
+                                     style={{marginRight: 15}}><a href=""
+                                                                  onClick={(e) => this.showDevInfo(e, dev.devid)}>{dev.devid}<span
+                                    style={{fontSize: 10, fontWeight: 400}}>({dev.type === 1 ? '平板' : '腰环'})</span></a></div>
+                            ) : '未绑定设备'}
+                            <Spin spinning={groupLoading}/>
+                        </div>
                     <Divider key={4}>帖子</Divider>
                     <Spin spinning={postLoading} key={5}>
                         <div className="List">
@@ -223,9 +241,9 @@ class User extends React.Component {
                                         <div className="content">
                                             <div style={{marginBottom: 10}}>{post.content}</div>
                                             <div>{post.post_pic.length > 0 ? post.post_pic.map(pic =>
-                                                <img width={100} height={100} alt="logo"
+                                                <img height={150} alt="logo"
                                                      src={picUrl + user.id + '/' + pic.pic_name} key={pic.ppid}
-                                                     style={{marginRight: 5}}/>
+                                                     style={{marginRight: 5, marginBottom: 5}}/>
                                             ) : ''}</div>
                                         </div>
                                         <ul className="footer">
@@ -239,7 +257,7 @@ class User extends React.Component {
                                             </li>
                                             <li className="footerItem"><span>{this.datetimeFormat(post.create_time)}</span><Divider
                                                 type="vertical" className="rightBorder"/></li>
-                                            <li className="footerItem"><Popconfirm title="确定要删除吗？" onConfirm={this.delete(post.postid)}><a href=""><IconText
+                                            <li className="footerItem"><Popconfirm title="确定要删除吗？" onConfirm={(e) => this.delete(e, post.postid)}><a href=""><IconText
                                                 type="delete" text=""/></a></Popconfirm></li>
                                         </ul>
                                     </div>

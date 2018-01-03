@@ -18,6 +18,8 @@ class GroupManage extends React.Component {
             group_name: '',
             devid: '',
             groupNameFilterDropdownVisible: false,
+            filtered1: false,
+            filtered2: false,
             devidfilterDropdownVisible: false
         }
     }
@@ -94,7 +96,7 @@ class GroupManage extends React.Component {
                     </div>
                 ),
                 filterDropdownVisible: groupNameFilterDropdownVisible,
-                filterIcon: <Icon type="search" style={{ color: this.state.devid ? '#108ee9' : '#aaa' }}/>,
+                filterIcon: <Icon type="search" style={{ color: this.state.group_name ? '#108ee9' : '#aaa' }}/>,
                 onFilterDropdownVisibleChange: (visible) => {
                     this.setState({groupNameFilterDropdownVisible: visible})
                 }
