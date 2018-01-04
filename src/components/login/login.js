@@ -10,7 +10,7 @@ class Login extends Component {
         return (
             <div className="all" style={{height: height}}>
                 <div className="login">
-                    <div className="login_logo"><h1>小鱼陪护后台管理</h1></div>
+                    <div className="login_logo"><h1>老人陪护后台管理</h1></div>
                     <div className="login_border">
                         <WrappedNormalLoginForm/>
                     </div>

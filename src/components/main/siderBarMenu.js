@@ -54,6 +54,14 @@ class SiderBarMenu extends React.Component {
                         <Icon type="inbox" />
                         <span>群组管理</span>
                     </Menu.Item>
+                    <Menu.Item key="alarm">
+                        <Icon type="mail" />
+                        <span>警报</span>
+                    </Menu.Item>
+                    <Menu.Item key="manageAlarmLog">
+                        <Icon type="mail" />
+                        <span>警报日志管理</span>
+                    </Menu.Item>
                     <Menu.Item key="posts">
                         <Icon type="mail" />
                         <span>帖子管理</span>

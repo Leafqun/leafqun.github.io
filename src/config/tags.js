@@ -4,5 +4,7 @@ export default {
     'dev/add': '设备添加',
     'groups': '群组管理',
     'posts': '帖子管理',
-    'personal': '个人中心'
+    'personal': '个人中心',
+    'alarm': '警报',
+    'manageAlarmLog': '警报日志管理'
 }

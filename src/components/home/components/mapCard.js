@@ -40,6 +40,11 @@ class MapCard extends React.Component {
                     }
                 }
             },
+            tooltip: {
+                formatter: (params) => {
+                    return params.name + ': ' + params.value[2]
+                }
+            },
             grid: {
                 top: 0,
                 left: '2%',

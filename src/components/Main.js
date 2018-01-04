@@ -18,6 +18,8 @@ import GroupManage from './groups/groupManage'
 import Group from './groups/group'
 import PostManage from './posts/postManage'
 import Personal from './personal/personal'
+import Alarm from './alarm/alarm'
+import AlarmManage from './alarm/alarmManage'
 import Home from './home/home'
 import Test from './test'
 import './main.css'
@@ -123,6 +125,8 @@ class Main extends Component {
                                     <Route exact path="/posts" component={PostManage}></Route>
                                     <Route path="/groups/:groupid" component={Group}></Route>
                                     <Route exact path="/personal" component={Personal}></Route>
+                                    <Route exact path="/alarm" component={Alarm}></Route>
+                                    <Route exact path="/manageAlarmLog" component={AlarmManage}></Route>
                                     <Route path="/test" component={Test}></Route>
                                 </div>
                             </div>

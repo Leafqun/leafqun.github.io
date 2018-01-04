@@ -44,6 +44,9 @@ class BreadcrumbNav extends React.Component {
                     {activeTag.indexOf('/personal') >= 0 ?
                         <Breadcrumb.Item >个人中心</Breadcrumb.Item> : ''
                     }
+                    {activeTag.indexOf('/manageAlarmLog') >= 0 ?
+                        <Breadcrumb.Item >警报日志管理</Breadcrumb.Item> : activeTag.indexOf('/alarm') >= 0 ? <Breadcrumb.Item >警报</Breadcrumb.Item> : ''
+                    }
                 </Breadcrumb>
             </div>
         )
