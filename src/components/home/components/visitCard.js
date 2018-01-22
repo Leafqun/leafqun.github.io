@@ -14,7 +14,7 @@ class VisitCard extends React.Component {
     }
     render () {
         const {flow} = this.props
-        const title = <div><Icon type="environment" />前30天服务量统计</div>
+        const title = <div><Icon type="area-chart" />前30天服务量统计</div>
         let data = this.getData(flow)
         const option = {
             tooltip: {

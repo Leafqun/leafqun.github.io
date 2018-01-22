@@ -53,6 +53,14 @@ export function height(height = document.documentElement.clientHeight, actions) 
             return height
     }
 }
+export function width(width = document.documentElement.clientWidth, actions) {
+    switch (actions.type) {
+        case  'setWidth':
+            return actions.data
+        default:
+            return width
+    }
+}
 export function loginId(loginId = window.sessionStorage.getItem('loginId'), actions) {
     switch (actions.type) {
         case 'setLoginId': {

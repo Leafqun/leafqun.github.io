@@ -46,13 +46,14 @@ class UserManage extends React.Component {
         this.getUserList(Object.assign({currentPage: val}, condition))
     }
     userFilterSearch = () => {
+        this.setState({current: 1})
         this.search(1)
     }
     selected = (value) => {
         this.setState({which: value, userName: ''})
     }
     clear = () => {
-        this.setState({ userName: ''})
+        this.setState({ userName: '', current: 1})
         this.getUserList({currentPage: 1})
     }
     showUserInfo = (e, id, userid) => {
@@ -75,10 +76,10 @@ class UserManage extends React.Component {
                     <div>{(index + 1) + (current - 1) * 15}</div>
                 )
             },
-            { title: '用户名', dataIndex: 'name', className: 'fonts' },
+            { title: '用户名', dataIndex: 'nickname', className: 'fonts' },
             { title: 'userid', dataIndex: 'userid', className: 'fonts' },
             { title: '密码', dataIndex: 'password', className: 'fonts' },
-            { title: '手机号', dataIndex: 'tel_num', className: 'fonts' },
+            { title: '手机号', dataIndex: 'name', className: 'fonts' },
             {
                 title: '登录状态',
                 dataIndex: 'is_login',
@@ -110,15 +111,17 @@ class UserManage extends React.Component {
             </Select>
         )
         const title = <div style={{ fontSize: 14, color: 'black' }}>
-            <Icon type="user-add"/><span style={{marginLeft: 10}}>用户管理</span>
-            <Input style={{marginLeft: 10, width: 250, marginRight: 5, fontSize: 10}} size="small"
-                   placeholder="用户名或手机号"  value={userName} suffix={userName ? <Icon type="close" onClick={() => this.clear()}/> : ''}
-                   onChange={(e) => this.handleUserNameChange(e)} addonAfter={selectAfter}/>
-            <Button type="primary" shape="circle" icon="search" size="small" onClick={() => this.userFilterSearch()}/>
+            <Icon type="user"/><span style={{marginLeft: 10}}>用户管理</span>
         </div>
         return (
             <div>
                 <Card title={title}>
+                    <div style={{marginBottom: 20}}>
+                        <Input style={{marginLeft: 10, width: 300, marginRight: 5, fontSize: 10}}
+                               placeholder="请输入用户名或手机号"  value={userName} suffix={userName ? <Icon type="close" onClick={() => this.clear()}/> : ''}
+                               onChange={(e) => this.handleUserNameChange(e)} addonAfter={selectAfter}/>
+                        <Button type="primary" icon="search" onClick={() => this.userFilterSearch()}/>
+                    </div>
                     <div>
                         <Table pagination={false} columns={columns} dataSource={userList} locale={{emptyText: '暂无数据'}}
                                size={'middle'} loading={loading} rowKey={record => record.id}/>

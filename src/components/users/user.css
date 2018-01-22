@@ -25,7 +25,8 @@
     font-weight: 600;
 }
 .List {
-
+    display: flex;
+    flex-flow: column wrap;
 }
 .List .postItem {
     padding-top: 12px;

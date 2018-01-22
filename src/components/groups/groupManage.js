@@ -20,7 +20,9 @@ class GroupManage extends React.Component {
             groupNameFilterDropdownVisible: false,
             filtered1: false,
             filtered2: false,
-            devidfilterDropdownVisible: false
+            devidfilterDropdownVisible: false,
+            orderByCreateTime: 0,
+            orderByTotal: 0
         }
     }
     componentWillMount () {
@@ -34,27 +36,48 @@ class GroupManage extends React.Component {
             console.log(error)
         })
     }
+    filterGetGroupList = (val) => {
+        const {devid, group_name, orderByCreateTime, orderByTotal, currentPage} = this.state
+        let params = {devid, group_name, orderByCreateTime, orderByTotal, currentPage}
+        for (let i in val) {
+            params[i] = val[i]
+        }
+        this.getGroupList(params)
+    }
+    handleTableChange = (pagination, filters, sorter)  => {
+        let params = {currentPage: 1}
+        if (sorter.type === 'total') {
+            this.setState({orderByTotal: sorter.order, orderByCreateTime: 0})
+            params['orderByTotal'] = sorter.order
+            params['orderByCreateTime'] = 0
+        } else {
+            this.setState({orderByTotal: 0, orderByCreateTime: sorter.order})
+            params['orderByTotal'] = 0
+            params['orderByCreateTime'] = sorter.order
+        }
+        this.filterGetGroupList(params)
+    }
     handleGroupNameChange = (e) => {
         this.setState({group_name: e.target.value})
     }
     clearGroupName = () => {
-        this.setState({group_name: ''})
-        this.getGroupList({currentPage: 1})
+        this.setState({group_name: '', currentPage: 1})
+        this.filterGetGroupList({currentPage: 1})
     }
     searchGroupName = () => {
-        this.setState({groupNameFilterDropdownVisible: false})
-        this.getGroupList({currentPage: 1, group_name: this.state.group_name.trim()})
+        this.setState({groupNameFilterDropdownVisible: false, currentPage: 1})
+        this.filterGetGroupList({currentPage: 1, group_name: this.state.group_name.trim()})
     }
     handleDevidChange = (e) => {
         this.setState({devid: e.target.value})
     }
     clearDevid = () => {
-        this.setState({devid: ''})
-        this.getGroupList({currentPage: 1})
+        this.setState({devid: '', currentPage: 1})
+        this.filterGetGroupList({currentPage: 1})
     }
     searchDevid = () => {
-        this.setState({devidfilterDropdownVisible: false})
-        this.getGroupList({currentPage: 1, devid: this.state.devid.trim()})
+        this.setState({devidfilterDropdownVisible: false, currentPage: 1})
+        this.filterGetGroupList({currentPage: 1, devid: this.state.devid.trim()})
     }
     showGroupInfo = (e, groupid, devid) => {
         e.preventDefault()
@@ -66,12 +89,13 @@ class GroupManage extends React.Component {
     }
     handlePageChange = (page) => {
         const {group_name, devid} = this.state
-        this.getGroupList({currentPage: page, group_name, devid})
+        this.setState({currentPage: page})
+        this.filterGetGroupList({currentPage: page, group_name, devid})
     }
     render () {
         const {groupList, loading, total, currentPage, devid, group_name, groupNameFilterDropdownVisible, devidfilterDropdownVisible} = this.state
         const title =  <div style={{ fontSize: 14, color: 'black' }}>
-            <Icon type="user-add"/><span style={{marginLeft: 10}}>群组管理</span>
+            <Icon type="usergroup-add"/><span style={{marginLeft: 10}}>群组管理</span>
         </div>
         let columns = [
             {
@@ -119,8 +143,8 @@ class GroupManage extends React.Component {
                     this.setState({devidfilterDropdownVisible: visible})
                 }
             },
-            { title: '总人数', dataIndex: 'total', className: 'fonts' },
-            { title: '创建时间', dataIndex: 'create_time', className: 'fonts' },
+            { title: '总人数', dataIndex: 'total', className: 'fonts', sorter: true },
+            { title: '创建时间', dataIndex: 'create_time', className: 'fonts', sorter: true },
             {
                 title: '操作',
                 dataIndex: '',
@@ -144,7 +168,7 @@ class GroupManage extends React.Component {
                 <Card  title={title}>
                     <div>
                         <Table pagination={false} columns={columns} dataSource={groupList} locale={{emptyText: '暂无数据'}}
-                               size={'middle'} loading={loading} rowKey={record => record.groupid}/>
+                               size={'middle'} loading={loading} rowKey={record => record.groupid} onChange={this.handleTableChange}/>
                     </div>
                     <div style={{textAlign: 'center', marginTop: 20}}>
                         <Pagination defaultCurrent={1} total={total} showQuickJumper

@@ -1,5 +1,5 @@
 import React from 'react'
-import {Card, Icon, Spin, List, Divider, Pagination, Popconfirm, Avatar, Input, DatePicker, Button, Select} from 'antd'
+import {Card, Icon, Spin, Divider, Pagination, Popconfirm, Avatar, Input, DatePicker, Button, Select} from 'antd'
 import axios from 'axios'
 import url, {picUrl} from '../../config/url'
 import '../users/user.css'
@@ -7,6 +7,7 @@ import {history} from "../../App";
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import tags from "../../config/tags";
+import CommentList from './commentList'
 import * as tagsActions from "../../actions/tagsActions";
 import QueueAnim from 'rc-queue-anim';
 const {RangePicker} = DatePicker;
@@ -171,18 +172,14 @@ class PostManage extends React.Component {
     render () {
         const {postList, loading, total, currentPage, commentLoading, commentList, showComments, condition, date} = this.state
         const selectAfter = (
-            <Select defaultValue="userName" style={{ width: 80,fontSize: 10 }} size="small" onChange={(value) => this.selected(value)}>
+            <Select defaultValue="userName" style={{ width: 80,fontSize: 10 }} onChange={(value) => this.selected(value)}>
                 <Option value="userName">用户名</Option>
                 <Option value="tel_num">手机号</Option>
                 <Option value="userid">用户id</Option>
             </Select>
         )
         const title =  <div style={{ fontSize: 14, color: 'black', display: 'flex'}}>
-            <div><Icon type="user-add"/><span style={{marginLeft: 10}}>帖子列表</span></div>
-            <div style={{marginLeft: 20}}><RangePicker onChange={(date, dateString) => this.handleDateChange(date, dateString)} style={{marginRight: 10}} showTime size="small"
-                                                       renderExtraFooter={() => 'extra footer'} value={date} locale={{lang: {placeholder: '请选择日期', rangePlaceholder: ['开始日期', '结束日期'], "ok": "确定",}}}/></div>
-            <div style={{marginLeft: 5}}><Input size="small" style={{width: 200}} onChange={this.handleUserNameChange} value={condition} placeholder="请输入用户名或id"/>{selectAfter}</div>
-            <div style={{marginLeft: 10}}><Button size="small" onClick={this.clear}>清空</Button><Button size="small" onClick={this.search} type="primary" style={{marginLeft: 5}}>提交</Button></div>
+            <div><Icon type="mail"/><span style={{marginLeft: 10}}>帖子列表</span></div>
         </div>
         const IconText = ({ type, text }) => (
             <span>
@@ -193,18 +190,27 @@ class PostManage extends React.Component {
         return (
             <div>
                 <Card title={title}>
-                    <Spin spinning={loading}>
-                        <div className="List">
-                            <QueueAnim
-                                type={['right', 'left']}
-                                ease={['easeOutQuart', 'easeInOutQuart']}>
+                    <div style={{display: 'flex', flexFlow: 'row wrap', marginBottom: 20}}>
+                        <div><RangePicker onChange={(date, dateString) => this.handleDateChange(date, dateString)} style={{marginRight: 10}} showTime
+                                                                   renderExtraFooter={() => 'extra footer'} value={date} locale={{lang: {placeholder: '请选择日期', rangePlaceholder: ['开始日期', '结束日期'], "ok": "确定",}}}/></div>
+                        <div style={{marginLeft: 5}}><Input style={{width: 200}} onChange={this.handleUserNameChange} value={condition} placeholder="请输入用户名或id"/>{selectAfter}</div>
+                        <div style={{marginLeft: 10}}><Button onClick={this.clear}>清空</Button><Button onClick={this.search} type="primary" style={{marginLeft: 5}}>提交</Button></div>
+                    </div>
+                    {loading ? <Spin/> : <div>
+                    <div className="List">
+                        <QueueAnim
+                            type={['right', 'left']}
+                            ease={['easeOutQuart', 'easeInOutQuart']}>
                             {postList.map((post, index, arr) =>
                                 <div key={post.postid}>
                                     <div className="postItem" style={index >= arr.length - 1 ? {border: 0} : {}}>
                                         <div style={{display: 'flex', alignItems: 'center', marginBottom: 15}}>
-                                            <Avatar src={post.avatar ? picUrl + post.id + '/' + post.avatar : ''} />
+                                            <Avatar src={post.avatar ? picUrl + post.id + '/' + post.avatar : ''}/>
                                             <div style={{marginLeft: 10}}>
-                                                <a href="" onClick={(e) => this.showUserInfo(e, post.userid, post.id)}><span style={{fontSize: 18}}>{post.name}</span><span style={{fontSize: 10}}>#{post.userid}</span></a>
+                                                <a href=""
+                                                   onClick={(e) => this.showUserInfo(e, post.userid, post.id)}><span
+                                                    style={{fontSize: 18}}>{post.nickname}</span><span
+                                                    style={{fontSize: 10}}>#{post.userid}</span></a>
                                             </div>
                                         </div>
                                         <div className="content">
@@ -224,49 +230,41 @@ class PostManage extends React.Component {
                                                 type="message" text={post.comment_num}/></a><Divider type="vertical"
                                                                                                      className="rightBorder"/>
                                             </li>
-                                            <li className="footerItem"><span>{this.datetimeFormat(post.create_time)}</span><Divider
+                                            <li className="footerItem">
+                                                <span>{this.datetimeFormat(post.create_time)}</span><Divider
                                                 type="vertical" className="rightBorder"/></li>
-                                            <li className="footerItem"><Popconfirm title="确定要删除吗？" onConfirm={(e) => this.delete(e, post.postid)}><a href=""><IconText
+                                            <li className="footerItem"><Popconfirm title="确定要删除吗？"
+                                                                                   onConfirm={(e) => this.delete(e, post.postid)}><a
+                                                href=""><IconText
                                                 type="delete" text=""/></a></Popconfirm></li>
                                         </ul>
                                     </div>
                                     <QueueAnim
                                         animConfig={[
-                                            { opacity: [1, 0], translateY: [0, 50] },
-                                            { opacity: [1, 0], translateY: [0, -12] }
+                                            {opacity: [1, 0], translateY: [0, 50]},
+                                            {opacity: [1, 0], translateY: [0, -12]}
                                         ]}>
-                                    {showComments[post.postid] ? <div key="a">
-                                        <div style={{fontSize: 16, fontWeight: 800, margin: '10px 0 10px 0'}}>总计{post.comment_num}条评论：</div>
-                                        <Spin spinning={commentLoading[post.postid]}>
-                                            {<List
-                                                locale={{emptyText: '暂无数据'}}
-                                                itemLayout="vertical"
-                                                dataSource={commentList[post.postid]}
-                                                renderItem={comment => (
-                                                    <List.Item
-                                                        key={comment.commentid}
-                                                    >
-                                                        <List.Item.Meta
-                                                            title={<div style={{display: 'flex', alignItems: 'center'}}><Avatar src={comment.avatar ? picUrl + comment.id + '/' + comment.avatar : ''} /><div style={{marginLeft: 10}}>{comment.name}</div></div>}
-                                                            description={comment.content}
-                                                        />
-                                                        <div>{this.datetimeFormat(comment.create_time)}</div>
-                                                    </List.Item>
-                                                )}
-                                            />}
-                                        </Spin>
-                                        <Divider>end</Divider>
-                                    </div> : null}
+                                        {showComments[post.postid] ? <div key="a">
+                                            <div style={{
+                                                fontSize: 16,
+                                                fontWeight: 800,
+                                                margin: '10px 0 20px 0'
+                                            }}>总计{post.comment_num}条评论：
+                                            </div>
+                                            <Spin spinning={commentLoading[post.postid]}>
+                                                <CommentList commentList={commentList[post.postid]}/>
+                                            </Spin>
+                                            <Divider>end</Divider>
+                                        </div> : null}
                                     </QueueAnim>
                                 </div>
                             )}
-                            </QueueAnim>
-                        </div>
-                        <Pagination size="small" total={total} style={{textAlign: 'center', marginTop: 10}}
-                                    showQuickJumper pageSize={5} current={currentPage}
-                                    onChange={this.handlePageChange}
-                                    showTotal={(total, range) => `共${total}条`}/>
-                    </Spin>
+                        </QueueAnim>
+                    </div>
+                    <Pagination size="small" total={total} style={{textAlign: 'center', marginTop: 10}}
+                                showQuickJumper pageSize={5} current={currentPage}
+                                onChange={this.handlePageChange}
+                                showTotal={(total, range) => `共${total}条`}/></div>}
                 </Card>
             </div>
         )

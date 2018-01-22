@@ -3,6 +3,11 @@ import {Card, Table, Button, Input, Icon} from 'antd'
 import ReactEcharts from 'echarts-for-react'
 import geoData from '../home/components/get-geography-value1.js'
 import testData from './data/input'
+import {history} from "../../App";
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import tags from "../../config/tags";
+import * as tagsActions from "../../actions/tagsActions";
 
 require('echarts/map/js/china.js');
 
@@ -56,6 +61,26 @@ class Alarm extends React.Component {
     }
     clear = () => {
         this.setState({filterData: this.state.data, city: ''})
+    }
+    showDevInfo = (e, devid) => {
+        e.preventDefault()
+        this.createTag('devs')
+        history.push({pathname: '/devs/' + devid})
+        this.props.setActiveTag(history.location.pathname)
+    }
+    createTag = (val) => {
+        let {tagsOpenedList} = this.props
+        let isOpened = false
+        tagsOpenedList.forEach((tag,index) => {
+            if (tag.name === val) {
+                isOpened = true
+                // this.props.moveToSecond(index)
+                return
+            }
+        })
+        if (!isOpened) {
+            this.props.createTag({name: val, title: tags[val]})
+        }
     }
     datetimeFormat = (date) => {
         let dateTime = new Date(date);
@@ -169,7 +194,7 @@ class Alarm extends React.Component {
             dateIndex: '',
             key: 'devid',
             render: (record) => (
-                <div>{record.value[2]}</div>
+                <div><a onClick={(e) => this.showDevInfo(e, record.value[2])}>{record.value[2]}</a></div>
             )
         }, {
             title: '发生时间',
@@ -179,7 +204,7 @@ class Alarm extends React.Component {
                 <div>{record.value[3]}</div>
             )
         }];
-        const title = <div><Icon type="user-add"/><span style={{marginLeft: 10}}>警报</span></div>
+        const title = <div><Icon type="notification"/><span style={{marginLeft: 10}}>警报</span></div>
         return (
             <Card title={title} style={{display: 'overflow'}}>
                 <div style={{width: '60%', float: 'left'}}>
@@ -207,5 +232,13 @@ class Alarm extends React.Component {
         )
     }
 }
-
-export default Alarm
+function mapStateToProps (state) {
+    return {
+        activeTag : state.activeTag,
+        tagsOpenedList: state.tagsOpenedList
+    }
+}
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators(tagsActions, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps) (Alarm)

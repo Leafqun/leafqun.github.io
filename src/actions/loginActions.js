@@ -39,6 +39,12 @@ export function setHeight(height) {
         data: height
     }
 }
+export function setWidth(width) {
+    return {
+        type: 'setWidth',
+        data: width
+    }
+}
 export function setLoginId(id) {
     return {
         type: 'setLoginId',

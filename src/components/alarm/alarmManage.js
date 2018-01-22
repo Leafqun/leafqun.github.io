@@ -1,14 +1,68 @@
 import React from 'react'
-import {Card, Icon, Popconfirm, Table} from 'antd'
-import testData from './data/input'
+import {Card, Icon, Popconfirm, Table, Pagination, Input, DatePicker, Button} from 'antd'
 import {history} from "../../App";
 import tags from "../../config/tags";
 import * as tagsActions from "../../actions/tagsActions"
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-
+import axios from 'axios'
+import url from '../../config/url'
+const {RangePicker} = DatePicker;
 
 class AlarmManage extends React.Component {
+    constructor (props) {
+        super(props)
+        this.state = {
+            alarmList: [],
+            loading: true,
+            currentPage: 1,
+            total: 1,
+            city: '',
+            time: []
+        }
+    }
+    componentWillMount () {
+        this.getAlarmList({currentPage: 1})
+    }
+    getAlarmList = (val) => {
+        this.setState({loading: true})
+        axios.get(url + 'alarm/getAlarmList', {params: val}).then(response => {
+            this.setState({alarmList: response.data.alarmList.data, total: response.data.alarmList.total, loading: false})
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+    handlePageChange = (page) => {
+        let {city, time} = this.state
+        let startTime = ''
+        let endTime = ''
+        if (time.length > 0) {
+            startTime = time[0].format("YYYY-MM-DD HH:mm:ss")
+            endTime = time[1].format("YYYY-MM-DD HH:mm:ss")
+        }
+        this.setState({currentPage: page})
+        this.getAlarmList({currentPage: page, city, startTime, endTime})
+    }
+    handleDateChange = (date, dateString) => {
+        this.setState({time: date})
+    }
+    handleCityChange = (e) => {
+        this.setState({city: e.target.value.trim()})
+    }
+    clear = () => {
+        this.setState({time: [], city: ''})
+        this.getAlarmList({currentPage: 1})
+    }
+    search = () => {
+        let {city, time} = this.state
+        let startTime = ''
+        let endTime = ''
+        if (time.length > 0) {
+            startTime = time[0].format("YYYY-MM-DD HH:mm:ss")
+            endTime = time[1].format("YYYY-MM-DD HH:mm:ss")
+        }
+        this.getAlarmList({currentPage: 1, city, startTime, endTime})
+    }
     showDevInfo = (e, devid) => {
         e.preventDefault()
         this.createTag('devs')
@@ -30,8 +84,9 @@ class AlarmManage extends React.Component {
         }
     }
     render () {
+        const {alarmList, total, loading, currentPage, time, city} = this.state
         let columns = [
-            { title: '城市', dataIndex: 'name', className: 'fonts' },
+            { title: '城市', dataIndex: 'city', className: 'fonts' },
             {
                 title: '设备ID',
                 dataIndex: '',
@@ -45,12 +100,12 @@ class AlarmManage extends React.Component {
                 dataIndex: '',
                 className: 'fonts',
                 render: record => (
-                    <div>{record.location.length > 0 ? `[${record.location[0]}, ${record.location[1]}]`  : []}</div>
+                    <div>{record.location.length > 0 ? `[${record.location}]`  : []}</div>
                 )
             },
             {
                 title: '创建时间',
-                dataIndex: 'time',
+                dataIndex: 'create_time',
                 className: 'fonts'
             },
             {
@@ -66,10 +121,29 @@ class AlarmManage extends React.Component {
                     </div>
                 )
             }]
-        const title = <div><Icon type="user-add"/><span style={{marginLeft: 10}}>警报日志管理</span></div>
+        const title = <div><Icon type="calendar"/><span style={{marginLeft: 10}}>警报日志管理</span></div>
         return (
             <Card title={title}>
-                <Table dataSource={testData} columns={columns} size="middle" locale={{emptyText: '暂无数据'}} rowKey={record => record.devid + record.time}/>
+                <div style={{marginBottom: 20, display: 'flex', flexFlow: 'row wrap'}}>
+                    <RangePicker locale={{lang: {placeholder: '请选择日期', rangePlaceholder: ['开始日期', '结束日期'], "ok": "确定",}}}
+                                 onChange={(date, dateString) => this.handleDateChange(date, dateString)} style={{marginRight: 10}} showTime
+                                 value={time}
+                    />
+                    <Input placeholder="请输入城市或设备号" style={{width: 200}} onChange={this.handleCityChange} value={city}/>
+                    <div style={{marginLeft: 5}}>
+                        <Button onClick={this.clear}>重置</Button>
+                        <Button type="primary" onClick={this.search}>搜索</Button>
+                    </div>
+                </div>
+                <Table dataSource={alarmList} columns={columns} pagination={false}
+                       size="middle" locale={{emptyText: '暂无数据'}}
+                       rowKey={record => record.devid + record.create_time} loading={loading}
+                />
+                <div style={{textAlign: 'center', marginTop: 20}}>
+                    <Pagination defaultCurrent={1} total={total} showQuickJumper
+                                showTotal={(total, range) => `共${total}条`} size="small"
+                                pageSize={10} current={currentPage} onChange={this.handlePageChange}/>
+                </div>
             </Card>
         )
     }

@@ -39,7 +39,7 @@ class SiderBarMenu extends React.Component {
                     onClick={this.handleMenuChange}
                 >
                     <Menu.Item key="users">
-                        <Icon type="pie-chart" />
+                        <Icon type="user" />
                         <span>用户管理</span>
                     </Menu.Item>
                     <Menu.Item key="devs">
@@ -47,19 +47,19 @@ class SiderBarMenu extends React.Component {
                         <span>设备管理</span>
                     </Menu.Item>
                     <Menu.Item key="dev/add">
-                        <Icon type="inbox" />
+                        <Icon type="laptop" />
                         <span>设备添加</span>
                     </Menu.Item>
                     <Menu.Item key="groups">
-                        <Icon type="inbox" />
+                        <Icon type="usergroup-add" />
                         <span>群组管理</span>
                     </Menu.Item>
                     <Menu.Item key="alarm">
-                        <Icon type="mail" />
+                        <Icon type="notification" />
                         <span>警报</span>
                     </Menu.Item>
                     <Menu.Item key="manageAlarmLog">
-                        <Icon type="mail" />
+                        <Icon type="calendar" />
                         <span>警报日志管理</span>
                     </Menu.Item>
                     <Menu.Item key="posts">

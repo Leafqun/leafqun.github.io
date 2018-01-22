@@ -14,6 +14,7 @@ export const history = createHistory()
 class App extends Component {
     onWindowResize = () => {
         this.props.setHeight(document.documentElement.clientHeight)
+        this.props.setWidth(document.documentElement.clientWidth)
     }
     componentDidMount() {
         window.addEventListener('resize', this.onWindowResize)
@@ -24,16 +25,16 @@ class App extends Component {
         window.removeEventListener('resize', this.onWindowResize)
     }
     render() {
-        const { isLogin } = this.props
+        const { isLogin, height } = this.props
         return (
                 <Router history={history}>
-                    <div>
+                    <div style={{height: height}}>
                         <Switch>
                             <Route exact path="/" render={() => <Redirect to="/login"/>}></Route>
                             <Route path="/login" component={Login}></Route>
                             {isLogin ?
                                 <Switch>
-                                    <Route path="/" component={Main}></Route>,
+                                    <Route path="/" component={Main}></Route>
                                 </Switch>
                                 : <Route path="*" render={() => <Redirect to="/login"/>}></Route>
                             }
@@ -46,7 +47,8 @@ class App extends Component {
 
 function mapStateToProps(state) {
     return {
-        isLogin: state.isLogin
+        isLogin: state.isLogin,
+        height: state.height
     }
 }
 function mapDispatchToProps(dispatch) {

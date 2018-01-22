@@ -1,11 +1,12 @@
 import React from 'react'
-import {Card, Icon, Tag, Tooltip, Spin, List, Divider, Pagination, Popconfirm, Avatar} from 'antd'
+import {Card, Icon, Tag, Tooltip, Spin, Divider, Pagination, Popconfirm} from 'antd'
 import {history} from "../../App";
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as tagsActions from "../../actions/tagsActions"
 import url from '../../config/url'
 import axios from  'axios'
+import CommentList from '../posts/commentList'
 import { picUrl } from '../../config/url'
 import './user.css'
 import tags from "../../config/tags";
@@ -20,7 +21,7 @@ class User extends React.Component {
                 userid: '',
                 name: '',
                 password: '',
-                tel_num: '',
+                nickname: '',
                 avatar: '',
                 is_login: '',
                 devList: []
@@ -174,7 +175,7 @@ class User extends React.Component {
         const {user, userLoading, groupList, groupLoading, postList, postLoading, total, currentPage, commentList, commentLoading, showComments} = this.state
         const id = history.location.pathname.split('/')[3]
         const title =  <div style={{ fontSize: 14, color: 'black' }}>
-                            <Icon type="user-add"/><span style={{marginLeft: 10}}>用户详情</span>
+                            <Icon type="user"/><span style={{marginLeft: 10}}>用户详情</span>
                         </div>
         const IconText = ({ type, text }) => (
              <span>
@@ -193,7 +194,7 @@ class User extends React.Component {
                             </div>
                             <div className="name">
                                 <div>
-                                    <div><span className="username">{user.name}</span>#{user.userid}</div>
+                                    <div><span className="username">{user.nickname}</span>#{user.userid}</div>
                                 </div>
                                 <div className="tag">
                                     <div>
@@ -209,7 +210,7 @@ class User extends React.Component {
                         </Spin>
                     </div>
                     <div className="otherInfo" key={2}>
-                        手机：{user.tel_num ? user.tel_num : '无' }
+                        手机：{user.name ? user.name : '无' }
                     </div>
                     <div style={{display: 'flex', flexFlow: 'row wrap'}} className="otherInfo" key={3}>
                         <div>群组：</div>
@@ -230,7 +231,7 @@ class User extends React.Component {
                             <Spin spinning={groupLoading}/>
                         </div>
                     <Divider key={4}>帖子</Divider>
-                    <Spin spinning={postLoading} key={5}>
+                        {postLoading ? <Spin key={5}/> : <div>
                         <div className="List">
                             <QueueAnim
                                 type={['right', 'left']}
@@ -268,21 +269,7 @@ class User extends React.Component {
                                     {showComments[post.postid] ? <div  key="a">
                                         <div style={{fontSize: 16, fontWeight: 800, margin: '10px 0 10px 0'}}>总计{post.comment_num}条评论：</div>
                                         <Spin spinning={commentLoading[post.postid]}>
-                                        {<List
-                                            itemLayout="vertical"
-                                            dataSource={commentList[post.postid]}
-                                            renderItem={comment => (
-                                                <List.Item
-                                                    key={comment.commentid}
-                                                >
-                                                    <List.Item.Meta
-                                                        title={<div style={{display: 'flex', alignItems: 'center'}}><Avatar src={comment.avatar ? picUrl + comment.id + '/' + comment.avatar : ''} /><div style={{marginLeft: 10}}>{comment.name}</div></div>}
-                                                        description={comment.content}
-                                                    />
-                                                    <div>{this.datetimeFormat(comment.create_time)}</div>
-                                                </List.Item>
-                                            )}
-                                        />}
+                                            <CommentList commentList={commentList[post.postid]}/>
                                         </Spin>
                                         <Divider>end</Divider>
                                     </div> : null}
@@ -295,7 +282,7 @@ class User extends React.Component {
                                     showQuickJumper pageSize={5} current={currentPage}
                                     onChange={this.handlePageChange}
                                     showTotal={(total, range) => `共${total}条`}/>
-                    </Spin>
+                        </div>}
                     </QueueAnim>
                 </Card>
             </div>

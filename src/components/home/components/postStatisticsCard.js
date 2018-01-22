@@ -83,7 +83,7 @@ class PostStatisticsCard extends React.Component {
                 }
             ]
         }
-        const title = <div><Icon type="environment" />{which === 1 ? '前30天帖子数量统计' : '前10个月帖子数量统计'}</div>
+        const title = <div><Icon type="mail" style={{color: 'black'}}/>{which === 1 ? '前30天帖子数量统计' : '前10个月帖子数量统计'}</div>
         const extra = <div><RadioGroup name="radiogroup" defaultValue={1} onChange={this.onChange}>
             <Radio value={1}>天</Radio>
             <Radio value={2}>月</Radio>

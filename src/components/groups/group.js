@@ -112,7 +112,7 @@ class Group extends React.Component {
                         <div>群组成员：</div>
                         {userList.length > 0 ? userList.map((user) =>
                             <div key={user.id}
-                                 style={{marginRight: 20}}><a href="" onClick={(e) => this.showUserInfo(e, user.userid, user.id)}>{user.name} {user.auth === 2 ? '(群主)' : null}</a></div>
+                                 style={{marginRight: 20}}><a href="" onClick={(e) => this.showUserInfo(e, user.userid, user.id)}>{user.nickname}<span style={{fontSize: 10}}>#{user.userid}</span> {user.auth === 2 ? '(群主)' : null}</a></div>
                         ) : null}
                         <Spin spinning={userLoading}/>
                     </div>

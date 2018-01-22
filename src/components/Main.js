@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { Route } from 'react-router-dom'
-import { Row, Col, Button, Icon, Dropdown, Menu, Avatar, Affix } from 'antd'
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import {Route} from 'react-router'
+import {Row, Button, Icon, Dropdown, Menu, Avatar} from 'antd'
 import * as siderBarAction from "../actions/siderBarActions"
 import * as loginAction from '../actions/loginActions'
 import * as tagsAction from '../actions/tagsActions'
@@ -23,10 +23,16 @@ import AlarmManage from './alarm/alarmManage'
 import Home from './home/home'
 import Test from './test'
 import './main.css'
-import { history } from "../App";
+import {history} from "../App";
 import tags from "../config/tags"
+import QueueAnim from 'rc-queue-anim';
 
 class Main extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {isShow: false}
+    }
+
     toggleCollapsed = () => {
         this.props.setCollapsed()
         window.sessionStorage.setItem('collapsed', this.props.collapsed)
@@ -40,7 +46,7 @@ class Main extends Component {
     createTag = (val) => {
         let {tagsOpenedList} = this.props
         let isOpened = false
-        tagsOpenedList.forEach((tag,index) => {
+        tagsOpenedList.forEach((tag, index) => {
             if (tag.name === val) {
                 isOpened = true
                 // this.props.moveToSecond(index)
@@ -56,95 +62,121 @@ class Main extends Component {
         window.sessionStorage.setItem('isLogin', false)
         history.push({pathname: '/login'})
     }
-    render () {
+    showMenu = () => {
+        this.setState({isShow: true})
+    }
+    closeMenu = () => {
+        if (this.props.collapsed) this.props.setCollapsed()
+        this.setState({isShow: false})
+    }
+
+    render() {
         const menu = (
             <Menu>
                 <Menu.Item key="0">
                     <a href="" onClick={this.goToPersonal}>个人中心</a>
                 </Menu.Item>
                 <Menu.Item key="1">
-                    <a  onClick={this.logout}>注销</a>
+                    <a onClick={this.logout}>注销</a>
                 </Menu.Item>
             </Menu>
         )
-        const { collapsed, height } = this.props
+        const {collapsed, height, width} = this.props
+        const {isShow} = this.state
         return (
             <div id="main" className="main">
-                <Row>
-                    <Col span={collapsed ? '1' : '3'} style={{backgroundColor: '#001529'}}>
-                        <Affix>
-                            <div className="logo-con">
-                                {collapsed ?
-                                    <img src={require('./logo-min.jpg')} alt="pic"
-                                         style={{height: 60, width: '80%', marginLeft: 10}}/>
-                                    : <img src={require('./logo.jpg')} alt="pic"/>
-                                }
-                            </div>
-                            <SiderBarMenu></SiderBarMenu>
-                        </Affix>
-                    </Col>
-                    <Col span={collapsed ? '23' : '21'} className="main_header-con" style={{ backgroundColor: '#f0f0f0', minHeight: height }}  id="ss">
-                        <Affix>
-                            <div className="main-header">
-                                <div className="navicon-con">
-                                    <Button type="default" onClick={this.toggleCollapsed}>
-                                        <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'}/>
-                                    </Button>
+                <div style={{height: height, width: width, zIndex: isShow ? 2 : -1, position: 'absolute'}}
+                     onClick={this.closeMenu}></div>
+                {width > 1200 ? <div style={{backgroundColor: '#001529', width: collapsed ? '4%' : '14%'}}>
+                    <div className="logo-con">
+                        {collapsed ?
+                            <img src={require('./logo-min.jpg')} alt="pic"
+                                 style={{height: 60, width: '80%', marginLeft: 10}}/>
+                            : <img src={require('./logo.jpg')} alt="pic"/>
+                        }
+                    </div>
+                    <SiderBarMenu></SiderBarMenu>
+                </div> : null}
+                <QueueAnim type="left">
+                    {isShow && width < 1200 ?
+                        <div style={{height: '100px', width: 100, position: 'absolute', zIndex: 2}} key="menu">
+                            <div style={{backgroundColor: '#001529', width: 150}}>
+                                <div className="logo-con">
+                                    <img src={require('./logo.jpg')} alt="pic"/>
                                 </div>
-                                <div className="header-middle-con">
-                                    <div className="main-breadcrumb">
-                                        <BreadcrumbNav/>
-                                    </div>
-                                </div>
-                                <div className="header-avator-con">
-                                    <Row type="flex" justify="center" align="middle">
-                                        <Dropdown overlay={menu} trigger={['click']}>
-                                            <a href="">
-                                                <span className="main-user-name">admin</span>
-                                                <Icon type="down"/>
-                                            </a>
-                                        </Dropdown>
-                                        <Avatar style={{backgroundColor: '#619fe7', marginLeft: 10}} src={require('./users/1.jpg')}></Avatar>
-                                    </Row>
-                                </div>
-                            </div>
-                            <div className="tags-con">
-                               <TagsPageOpened/>
-                            </div>
-                        </Affix>
-                        <div>
-                            <div className="single-page-con">
-                                <div className="single-page">
-                                    <Route path="/home" component={Home}></Route>
-                                    <Route exact path="/users" component={UserManage}></Route>
-                                    <Route path="/users/:userid/:id" component={User}></Route>
-                                    <Route exact path="/devs" component={DevManage}></Route>
-                                    <Route path="/devs/:devid" component={Dev}></Route>
-                                    <Route exact path="/dev/add" component={DevAdd}></Route>
-                                    <Route exact path="/groups" component={GroupManage}></Route>
-                                    <Route exact path="/posts" component={PostManage}></Route>
-                                    <Route path="/groups/:groupid" component={Group}></Route>
-                                    <Route exact path="/personal" component={Personal}></Route>
-                                    <Route exact path="/alarm" component={Alarm}></Route>
-                                    <Route exact path="/manageAlarmLog" component={AlarmManage}></Route>
-                                    <Route path="/test" component={Test}></Route>
-                                </div>
+                                <SiderBarMenu></SiderBarMenu></div>
+                        </div> : null}
+                </QueueAnim>
+                <div className="main_header-con"
+                     style={{
+                         backgroundColor: '#f0f0f0',
+                         minHeight: height,
+                         width: width > 1200 ? collapsed ? '96%' : '86%' : '100%',
+                         zIndex: 1
+                     }} id="ss">
+                    <div className="main-header">
+                        <div className="navicon-con">
+                            {width > 1200 ? <Button type="default" onClick={this.toggleCollapsed}>
+                                    <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'}/>
+                                </Button>
+                                : <Button type="default" onClick={this.showMenu}>
+                                    <Icon type="menu-fold"/>
+                                </Button>
+                            }
+                        </div>
+                        <div className="header-middle-con">
+                            <div className="main-breadcrumb">
+                                <BreadcrumbNav/>
                             </div>
                         </div>
-                    </Col>
-                </Row>
+                        <div className="header-avator-con">
+                            <Row type="flex" justify="center" align="middle">
+                                <Dropdown overlay={menu} trigger={['click']}>
+                                    <a href="">
+                                        <span className="main-user-name">admin</span>
+                                        <Icon type="down"/>
+                                    </a>
+                                </Dropdown>
+                                <Avatar style={{backgroundColor: '#619fe7', marginLeft: 10}}
+                                        src={require('./users/1.jpg')}></Avatar>
+                            </Row>
+                        </div>
+                    </div>
+                    <div className="tags-con">
+                        <TagsPageOpened/>
+                    </div>
+                    <div style={{height: height - 100, overflowY: 'scroll', overflowX: 'hidden', marginBottom: 150}}>
+                        <div className="single-page-con">
+                            <Route path="/home" component={Home}></Route>
+                            <Route exact path="/users" component={UserManage}></Route>
+                            <Route path="/users/:userid/:id" component={User}></Route>
+                            <Route exact path="/devs" component={DevManage}></Route>
+                            <Route path="/devs/:devid" component={Dev}></Route>
+                            <Route exact path="/dev/add" component={DevAdd}></Route>
+                            <Route exact path="/groups" component={GroupManage}></Route>
+                            <Route exact path="/posts" component={PostManage}></Route>
+                            <Route path="/groups/:groupid" component={Group}></Route>
+                            <Route exact path="/personal" component={Personal}></Route>
+                            <Route exact path="/alarm" component={Alarm}></Route>
+                            <Route exact path="/manageAlarmLog" component={AlarmManage}></Route>
+                            <Route path="/test" component={Test}></Route>
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
     return {
         collapsed: state.collapsed,
         height: state.height,
+        width: state.width,
         tagsOpenedList: state.tagsOpenedList
     }
 }
+
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(Object.assign(siderBarAction, loginAction, tagsAction), dispatch)
 }
