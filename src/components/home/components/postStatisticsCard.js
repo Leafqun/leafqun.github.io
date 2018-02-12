@@ -3,6 +3,7 @@ import {Card, Icon, Radio, Spin} from 'antd'
 import ReactEcharts from 'echarts-for-react'
 import url from "../../../config/url"
 import axios from 'axios'
+import {CSVLink} from 'react-csv';
 const RadioGroup = Radio.Group;
 
 class PostStatisticsCard extends React.Component {
@@ -48,6 +49,14 @@ class PostStatisticsCard extends React.Component {
         if (e.target.value === 1) this.getPostNumByDay()
         else this.getPostNumByMonth()
     }
+    transformData = (data) => {
+        if (data.length <= 0) return null;
+        data.map(value => {
+            delete value.itemStyle
+            return value
+        })
+        return data
+    }
     render () {
         const {postNum, which} = this.state
         const option = {
@@ -83,7 +92,19 @@ class PostStatisticsCard extends React.Component {
                 }
             ]
         }
-        const title = <div><Icon type="mail" style={{color: 'black'}}/>{which === 1 ? '前30天帖子数量统计' : '前10个月帖子数量统计'}</div>
+        const header = [
+            {label: '时间', key: 'name'},
+            {label: '帖子数', key: 'value'}
+        ]
+        const title = <div>
+            <Icon type="mail" style={{color: 'black'}}/>
+            {which === 1 ? '前30天帖子数量统计' : '前12个月帖子数量统计'}
+            <span style={{marginLeft: 15}}><CSVLink data={postNum.length > 0 ? this.transformData(postNum) :  []} headers={header}
+                                                    filename={which === 1 ? "前30天帖子数量统计.csv" : "前10个月帖子数量统计.csv"}
+                                                    className="btn btn-primary"
+                                                    target="_blank">报表</CSVLink>
+            </span>
+            </div>
         const extra = <div><RadioGroup name="radiogroup" defaultValue={1} onChange={this.onChange}>
             <Radio value={1}>天</Radio>
             <Radio value={2}>月</Radio>

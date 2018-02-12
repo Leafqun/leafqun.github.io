@@ -30,7 +30,7 @@ class InfoCard extends React.Component {
         let val = res.val
         let unit = res.unit
         return (
-           <div style={{backgroundColor: 'white', width: '100%', height: 120, marginRight: iconType ===  'heart' ? 0 : 20}} className="Card">
+           <div style={{backgroundColor: 'white', width: '100%', height: 120, marginRight: iconType ===  'heart' ? 0 : '1%'}} className="Card">
                <div style={{display: 'flex', backgroundColor: color, width: '30%', justifyContent: 'center', alignItems: 'center', borderBottomLeftRadius: 3, borderTopLeftRadius: 3}}>
                    <Icon type={iconType} style={{fontSize: 40, color: 'white'}}/>
                </div>

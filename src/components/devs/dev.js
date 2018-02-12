@@ -156,8 +156,18 @@ class Dev extends React.Component {
                         : <div className="devInfo"><div className="title">设备ID：</div><div className="content"><Spin spinning={loading}/>{dev.devid}</div><div style={{marginLeft: 5, fontWeight: 900}}><a href="" onClick={this.isEditDevid}><Icon type="edit" /></a></div></div>}
                     <div className="devInfo"><div className="title">创建时间：</div><div className="content"><Spin spinning={loading}/>{dev.create_time}</div></div>
                     <div className="devInfo"><div className="title">类型：</div><div className="content"><Spin spinning={loading}/>{dev.type === 1 ? '平板' : '腰环'}</div></div>
-                    {dev.type === 1 ? [isEditMax ? <div className="editDev" key={1}><div><Input style={{width: 250}} placeholder="请输入最大人数" onChange={this.handleMaxChange}/></div><div className="btn"><Button onClick={this.clearMax} style={{marginRight: 5}}>取消</Button><Button type="primary" onClick={this.submitMax} loading={maxLoading} icon={maxIcon}>提交</Button></div></div>
-                        : <div className="devInfo"><div className="title">最大人数：</div><div className="content"><Spin spinning={loading}/>{dev.max}</div><div style={{marginLeft: 5, fontWeight: 900}}><a href="" onClick={this.isEditMax}><Icon type="edit"/></a></div></div>,
+                    {dev.type === 1 ? [isEditMax ?
+                        <div className="editDev" key={1}>
+                            <div><Input style={{width: 250}} placeholder="请输入最大人数" onChange={this.handleMaxChange}/></div>
+                            <div className="btn">
+                                <Button onClick={this.clearMax} style={{marginRight: 5}}>取消</Button><Button type="primary" onClick={this.submitMax} loading={maxLoading} icon={maxIcon}>提交</Button>
+                            </div>
+                        </div>
+                        : <div className="devInfo" key={3}>
+                            <div className="title">最大人数：</div>
+                            <div className="content"><Spin spinning={loading}/>{dev.max}</div>
+                            <div style={{marginLeft: 5, fontWeight: 900}}><a href="" onClick={this.isEditMax}><Icon type="edit"/></a></div>
+                        </div>,
                     <div className="devInfo" key={2}><div className="title">群组：</div><div className="content"><Spin spinning={loading}/>{dev.groupid ? <a href="" onClick={(e) => this.showGroupInfo(e, dev.groupid)}>{dev.group_name}<span style={{fontSize: 10}}>#{dev.groupid}</span></a> : '未绑定群组'}</div></div>] : null}
                     <div className="devInfo"><div className="title">用户：</div><div className="content"><Spin spinning={loading}/>{dev.userid ? <a href="" onClick={(e) => this.showUserInfo(e, dev.id, dev.userid)}>{dev.nickname}<span style={{fontSize: 10}}>#{dev.userid}</span></a> : '未绑定用户'}</div></div>
                 </Card>

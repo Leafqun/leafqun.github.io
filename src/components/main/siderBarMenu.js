@@ -25,8 +25,14 @@ class SiderBarMenu extends React.Component {
         history.push({ pathname: '/' + key })
         this.props.setActiveTag(history.location.pathname)
     }
+    chooseActiveTag = (val) => {
+        let splitTag = val.split('/');
+        if (splitTag.length > 3) return splitTag[1]
+        else if (splitTag.length === 3) return splitTag[1] + '/' + splitTag[2]
+        else return splitTag[1]
+    }
     render () {
-        const { collapsed, height } = this.props
+        const { collapsed, height, activeTag } = this.props
         return (
             <div>
                 <Menu
@@ -34,6 +40,7 @@ class SiderBarMenu extends React.Component {
                     defaultOpenKeys={['sub1']}
                     mode="inline"
                     theme="dark"
+                    selectedKeys={[this.chooseActiveTag(activeTag)]}
                     inlineCollapsed={collapsed}
                     style={{width: '100%', textAlign: collapsed ? 'left' : 'left', height: height - 100}}
                     onClick={this.handleMenuChange}
@@ -77,7 +84,8 @@ function mapStateToProps (state) {
         collapsed: state.collapsed,
         height: state.height,
         width: state.width,
-        tagsOpenedList: state.tagsOpenedList
+        tagsOpenedList: state.tagsOpenedList,
+        activeTag: state.activeTag
     }
 }
 function mapDispatchToProps(dispatch) {

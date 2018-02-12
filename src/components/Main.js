@@ -85,9 +85,9 @@ class Main extends Component {
         const {isShow} = this.state
         return (
             <div id="main" className="main">
-                <div style={{height: height, width: width, zIndex: isShow ? 2 : -1, position: 'absolute'}}
+                <div style={{height: height, width: width, zIndex: isShow ? 2 : -1, position: 'absolute', backgroundColor: 'rgba(105,105,105,0.3)'}}
                      onClick={this.closeMenu}></div>
-                {width > 1200 ? <div style={{backgroundColor: '#001529', width: collapsed ? '4%' : '14%'}}>
+                {width > 1200 ? <div style={{backgroundColor: '#001529', width: collapsed ? 80 : '14%'}}>
                     <div className="logo-con">
                         {collapsed ?
                             <img src={require('./logo-min.jpg')} alt="pic"
@@ -99,8 +99,8 @@ class Main extends Component {
                 </div> : null}
                 <QueueAnim type="left">
                     {isShow && width < 1200 ?
-                        <div style={{height: '100px', width: 100, position: 'absolute', zIndex: 2}} key="menu">
-                            <div style={{backgroundColor: '#001529', width: 150}}>
+                        <div style={{height: '100px', width: 220, position: 'absolute', zIndex: 2}} key="menu">
+                            <div style={{backgroundColor: '#001529', width: '100%'}}>
                                 <div className="logo-con">
                                     <img src={require('./logo.jpg')} alt="pic"/>
                                 </div>
@@ -111,7 +111,7 @@ class Main extends Component {
                      style={{
                          backgroundColor: '#f0f0f0',
                          minHeight: height,
-                         width: width > 1200 ? collapsed ? '96%' : '86%' : '100%',
+                         width: width > 1200 ? collapsed ? width - 80 : '86%' : '100%',
                          zIndex: 1
                      }} id="ss">
                     <div className="main-header">
@@ -120,7 +120,7 @@ class Main extends Component {
                                     <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'}/>
                                 </Button>
                                 : <Button type="default" onClick={this.showMenu}>
-                                    <Icon type="menu-fold"/>
+                                    <Icon type="bars"/>
                                 </Button>
                             }
                         </div>

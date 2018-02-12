@@ -1,6 +1,7 @@
 import React from 'react'
 import {Card, Icon, Spin} from 'antd'
 import ReactEcharts from 'echarts-for-react'
+import {CSVLink} from 'react-csv';
 
 class VisitCard extends React.Component {
     getData = (val) => {
@@ -12,9 +13,27 @@ class VisitCard extends React.Component {
         }
         return {keys, values}
     }
+    transfromData = (val) => {
+        let data = []
+        for (let v in val) {
+            data.push({name: v, value: val[v]})
+        }
+        return data
+    }
     render () {
         const {flow} = this.props
-        const title = <div><Icon type="area-chart" />前30天服务量统计</div>
+        const headers = [
+            {label: '时间', key: 'name'},
+            {label: '访问量bit', key: 'value'}
+        ]
+        const title = <div>
+            <Icon type="area-chart" />前30天服务量统计
+            <span style={{marginLeft: 15}}><CSVLink data={this.transfromData(flow).length > 0 ? this.transfromData(flow) :  []} headers={headers}
+                                                    filename={'前30天访问量统计.csv'}
+                                                    className="btn btn-primary"
+                                                    target="_blank">报表</CSVLink>
+            </span>
+        </div>
         let data = this.getData(flow)
         const option = {
             tooltip: {

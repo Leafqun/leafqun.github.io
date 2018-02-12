@@ -186,7 +186,7 @@ class DevManage extends React.Component {
                 className: 'fonts',
                 render: (record) => (
                     <div style={{paddingLeft: 15}}>
-                        {record.id ? <Icon type="check-square" style={{color: 'green', fontSize: 18}}/> : <Icon type="close-square" style={{color: 'red', fontSize: 18}}/>}
+                        {record.user_id && record.groupid? <Icon type="check-square" style={{color: 'green', fontSize: 18}}/> : <Icon type="close-square" style={{color: 'red', fontSize: 18}}/>}
                     </div>
                 ),
                 filterDropdown: (
@@ -261,7 +261,7 @@ class DevManage extends React.Component {
                             </Tooltip>
                         </a>
                         <Popconfirm title="确定要删除吗?" placement="top" okText="是" cancelText="否"
-                                    onConfirm={() => this.onDelete(record.did)}>
+                                    onConfirm={() => this.onDelete(record.id)}>
                             <a href="" style={{marginLeft: 10}}><Icon type="delete" style={{fontSize: 18}}/></a>
                         </Popconfirm>
                     </div>

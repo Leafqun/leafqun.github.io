@@ -207,13 +207,13 @@ class Alarm extends React.Component {
         const title = <div><Icon type="notification"/><span style={{marginLeft: 10}}>警报</span></div>
         return (
             <Card title={title} style={{display: 'overflow'}}>
-                <div style={{width: '60%', float: 'left'}}>
+                <div style={{width: '60%', float: 'left', marginTop: -20}}>
                     <ReactEcharts style={{height: 750}}
                                   option={option || {}}
                                   notMerge={true}
                                   lazyUpdate={true} onEvents={onEvents}/>
                 </div>
-                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 80, float: 'left'}}>
+                <div style={{display: 'flex', flexWrap: 'row nowrap', alignItems: 'center', marginTop: 20}}>
                     <div>
                         <div style={{marginBottom: 5}}>
                             <Input style={{width: 200, marginRight: 10, borderColor: inputColor}} placeholder="请输入城市或设备id"

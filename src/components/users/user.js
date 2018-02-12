@@ -26,6 +26,7 @@ class User extends React.Component {
                 is_login: '',
                 devList: []
             },
+            devid: [],
             userLoading: true,
             groupList: [],
             groupLoading: true,
@@ -42,12 +43,21 @@ class User extends React.Component {
         this.getUserInfo()
         this.getGroupListFromUser()
         this.getPostListFromUser(1)
+        this.getDevIdFromId()
     }
     getUserInfo = () => {
-        const userid = history.location.pathname.split('/')
+        const userid = this.props.match.params.userid
         this.setState({userLoading: true})
-        axios.get(url + 'users/getUserInfo', {params: {userid: userid[2]}}).then(response => {
+        axios.get(url + 'users/getUserInfo', {params: {userid}}).then(response => {
             this.setState({userLoading: false, user: response.data.user})
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+    getDevIdFromId = () => {
+        const id = this.props.match.params.id
+        axios.get(url + 'devs/getDevIdFromId', {params: {id}}).then(response => {
+            this.setState({devid: response.data.devid})
         }).catch(error => {
             console.log(error)
         })
@@ -172,7 +182,7 @@ class User extends React.Component {
         return timeSpanStr;
     }
     render () {
-        const {user, userLoading, groupList, groupLoading, postList, postLoading, total, currentPage, commentList, commentLoading, showComments} = this.state
+        const {user, userLoading, groupList, groupLoading, postList, postLoading, total, currentPage, commentList, commentLoading, showComments, devid} = this.state
         const id = history.location.pathname.split('/')[3]
         const title =  <div style={{ fontSize: 14, color: 'black' }}>
                             <Icon type="user"/><span style={{marginLeft: 10}}>用户详情</span>
@@ -230,7 +240,11 @@ class User extends React.Component {
                             ) : '未绑定设备'}
                             <Spin spinning={groupLoading}/>
                         </div>
-                    <Divider key={4}>帖子</Divider>
+                        <div style={{display: 'flex', flexFlow: 'row wrap'}} className="otherInfo" key={10}>
+                            <div>视频通讯ID：</div>
+                            <div>{devid.map(d => <div key={d}>{d}</div>)}</div>
+                        </div>
+                    <Divider key={4}>共{total}条帖子</Divider>
                         {postLoading ? <Spin key={5}/> : <div>
                         <div className="List">
                             <QueueAnim

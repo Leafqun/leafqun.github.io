@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Table, Tag, Tooltip, Popconfirm, Icon, Pagination, Input, Select, Button, message } from 'antd'
+import { Card, Table, Tag, Tooltip, Popconfirm, Icon, Pagination, Input, Select, Button, message, Modal } from 'antd'
 import axios from 'axios'
 import url from '../../config/url'
 import { connect } from 'react-redux'
@@ -18,7 +18,13 @@ class UserManage extends React.Component {
             loading: true,
             bl: false,
             userName: '',
-            which: 'name'
+            which: 'name',
+            visible: false,
+            confirmLoading: false,
+            form: {
+                username: '',
+                password: ''
+            }
         }
     }
     componentWillMount () {
@@ -61,8 +67,43 @@ class UserManage extends React.Component {
         history.push({pathname: '/users/' + userid + '/' + id})
         this.props.setActiveTag(history.location.pathname)
     }
-    onDelete = (did) => {
-        message.info('暂无删除功能！！')
+    onDelete = (id) => {
+        axios.get(url + 'users/deleteUser', {params: {id}}).then(response => {
+            if (response.data.msg === 'success') {
+                this.getUserList({currentPage: 1})
+            }
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+    showModal = () => {
+        this.setState({
+            visible: true,
+        });
+    }
+    hideModal = () => {
+        this.setState({
+            visible: false,
+        });
+    }
+    handleChange= (e) => {
+        let val = e.target.value
+        this.setState({form: {username: val, password: val}})
+    }
+    handleOk = () => {
+        this.setState({confirmLoading: true})
+        axios.get(url + 'register', {params: this.state.form}).then(response => {
+            if (response.data.msg === '注册成功') {
+                message.success('注册成功')
+            } else {
+                message.error(response.data.msg)
+            }
+            this.setState({confirmLoading: false, form: {username: '', password: ''}})
+        }).catch(error => {
+            message.error('注册失败')
+            this.setState({confirmLoading: false, form: {username: '', password: ''}})
+            console.log(error)
+        })
     }
     render () {
         const { userList, current, total, loading, userName } = this.state
@@ -121,6 +162,18 @@ class UserManage extends React.Component {
                                placeholder="请输入用户名或手机号"  value={userName} suffix={userName ? <Icon type="close" onClick={() => this.clear()}/> : ''}
                                onChange={(e) => this.handleUserNameChange(e)} addonAfter={selectAfter}/>
                         <Button type="primary" icon="search" onClick={() => this.userFilterSearch()}/>
+                        <a style={{marginLeft: 10}}><Icon type="plus" style={{fontSize: 20}} onClick={this.showModal}/></a>
+                        <Modal
+                            title="添加用户"
+                            visible={this.state.visible}
+                            onOk={this.handleOk}
+                            onCancel={this.hideModal}
+                            okText="确认"
+                            cancelText="取消"
+                            confirmLoading={this.state.confirmLoading}
+                        >
+                            手机号：<Input style={{width: 300}} onChange={this.handleChange} value={this.state.form.username} placeholder="请输入手机号，密码和手机号相同"/>
+                        </Modal>
                     </div>
                     <div>
                         <Table pagination={false} columns={columns} dataSource={userList} locale={{emptyText: '暂无数据'}}

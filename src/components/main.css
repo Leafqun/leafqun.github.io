@@ -5,6 +5,7 @@
     height: 100%;
     display: flex;
     flex-flow: row nowrap;
+    min-width: 900px;
 }
 .main .unlock-con {
     width: 0px;

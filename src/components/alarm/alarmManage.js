@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import axios from 'axios'
 import url from '../../config/url'
+import {CSVLink} from 'react-csv';
 const {RangePicker} = DatePicker;
 
 class AlarmManage extends React.Component {
@@ -18,11 +19,13 @@ class AlarmManage extends React.Component {
             currentPage: 1,
             total: 1,
             city: '',
-            time: []
+            time: [],
+            download: []
         }
     }
     componentWillMount () {
         this.getAlarmList({currentPage: 1})
+        this.download()
     }
     getAlarmList = (val) => {
         this.setState({loading: true})
@@ -83,8 +86,26 @@ class AlarmManage extends React.Component {
             this.props.createTag({name: val, title: tags[val]})
         }
     }
+    download = () => {
+        axios.get(url + 'alarm/getMonthAlarmList').then(response => {
+            this.setState({download: response.data.alarmList})
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+    transformData = (val) => {
+        if (val && val.length <= 0) return null;
+        val.map(value => {
+            delete value.alarmid;
+            delete value.type;
+            delete value.detail;
+            delete value.duration;
+            return value
+        })
+        return val
+    }
     render () {
-        const {alarmList, total, loading, currentPage, time, city} = this.state
+        const {alarmList, total, loading, currentPage, time, city, download} = this.state
         let columns = [
             { title: '城市', dataIndex: 'city', className: 'fonts' },
             {
@@ -121,7 +142,14 @@ class AlarmManage extends React.Component {
                     </div>
                 )
             }]
-        const title = <div><Icon type="calendar"/><span style={{marginLeft: 10}}>警报日志管理</span></div>
+        const title = <div>
+            <Icon type="calendar"/><span style={{marginLeft: 10}}>警报日志管理</span>
+            <span style={{marginLeft: 15}}><CSVLink data={download.length > 0 ? this.transformData(download) :  []}
+                                                    filename={'报警日志统计.csv'}
+                                                    className="btn btn-primary"
+                                                    target="_blank">报表</CSVLink>
+            </span>
+        </div>
         return (
             <Card title={title}>
                 <div style={{marginBottom: 20, display: 'flex', flexFlow: 'row wrap'}}>
@@ -135,7 +163,7 @@ class AlarmManage extends React.Component {
                         <Button type="primary" onClick={this.search}>搜索</Button>
                     </div>
                 </div>
-                <Table dataSource={alarmList} columns={columns} pagination={false}
+                <Table dataSource={alarmList} columns={columns} pagination={false} ref="alarmTable"
                        size="middle" locale={{emptyText: '暂无数据'}}
                        rowKey={record => record.devid + record.create_time} loading={loading}
                 />

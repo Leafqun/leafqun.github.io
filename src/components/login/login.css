@@ -2,6 +2,7 @@
     background: url(img/login_bgx.gif);
     height: 100%;
     position: relative;
+    min-width: 400px;
 }
 .login{
     max-width: 405px;
